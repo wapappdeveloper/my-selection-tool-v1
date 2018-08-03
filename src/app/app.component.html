@@ -1,0 +1,68 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<header></header>
+<main class="tool-holder">
+  <div class="tool-container">
+    <div class="title-container">
+      <div class="title">Selection Tool</div>
+    </div>
+    <div class="text-container">
+      <div #textHolder class="text-holder" (mousedown)="mouseDownOnTextHolder($event)" (mouseup)="mouseUpOnTextHolder($event)"
+        (mousemove)="mouseMoveOnTextHolder($event)">
+        <div #hilightContainer class="place-fixed">
+          <div class="all-hilight-container" *ngFor="let hilight of saveSelectionForHilight;" [ngStyle]="manipulateStyleForSpan(hilight, adjustCoordinatesForHilight)">
+            <span *ngIf="hilight.multiline" [style.width.px]="hilight.startSelectionPosition.x - adjustCoordinatesForHilight.multiline"
+              class="move-span"></span>
+            <span [style.background-color]="hilight.color" [ngStyle]="{'color':'rgba(0,0,0,0)','border':'1px solid grey'}">{{hilight.selectionText}}</span>
+          </div>
+        </div>
+        <div #outlineMarkContainer class="place-fixed">
+          <div class="all-outline-container" *ngFor="let outline of saveSelectionForOutline;" [ngStyle]="manipulateStyleForSpan(outline, adjustCoordinatesForOutline)">
+            <span *ngIf="outline.multiline" [style.width.px]="outline.startSelectionPosition.x - adjustCoordinatesForOutline.multiline"
+              class="move-span"></span>
+            <span pattern="dotted-line" [ngStyle]="{'color':'rgba(0,0,0,0)'}">{{outline.selectionText}}</span>
+          </div>
+        </div>
+        <div #textContainer class="text-for-hilight place-fixed" [innerHtml]="this.innerHTMLFromJSON">
+          <!--<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span color="red" >Hilight</span> <span color="red" >Lorem</span> Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span color="cyan" >Hilight</span> It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span color="orange" >Hilight</span> Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>-->
+        </div>
+          <!--<div class="text-for-selection place-fixed">
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hilight Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hilight It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hilight Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
+          </div>-->
+          <!--<span style="position:relative;top:-8px;left:45px;padding:5px 0 5px 0;background-color:rgba(58, 218, 196, 0.5)" color="cyan">Hilight Lorem</span>-->
+      </div>
+    </div>
+    <div class="tag-holder">
+      <div class="button-holder" *ngFor="let tag of tagSchemaDataFromJSON;" >
+        <div class="color-ball drop-shadow" [style.background-color]="tag.colorCode"></div>
+        <input class="tag-button" value="{{tag.colorName}}" type="button" (click)="hilightSelectedText($event, tag.colorCode)">
+      </div>
+      <div class="button-holder">
+        <div class="color-ball clear-ball drop-shadow" [style.background-color]="'transparent'" ></div>
+        <input class="tag-button" value="clear-outline" (click)=clearAllOutlines($event)>
+      </div>
+      <div class="status button-holder" [@saveStatus]="saveStatus" (@saveStatus.done)="animationDone($event)">Saved</div>
+    </div>
+    <div class="clear"></div>
+    <div class="controls-holder">
+      <div class="controls-container">
+        <select class="doc-drop-down drop-shadow" (change)="setDocument($event.target.value)" [(ngModel)]="selectedDocumentName">
+          <option *ngFor="let document of documentList" value="{{document}}">{{document}}</option>
+        </select>
+        <input #save class="save-button drop-shadow" value="save" type="button" (click)=saveSelectionsInStorage($event)>
+        <input #delete class="delete-button drop-shadow" value="delete" type="button" (click)=deleteSelectionsInStorage($event)>
+        <select class="tag-schema-drop-down drop-shadow" (change)="setTagSchema($event.target.value)" [(ngModel)]="selectedTagSchemaName">
+          <option *ngFor="let tagSchema of tagSchemaList" value="{{tagSchema}}">{{tagSchema}}</option>
+        </select>
+      </div>
+    </div>
+    <div *ngIf="loading" class="loader-container">
+      <div class="loader">Loading...</div>
+    </div>
+  </div>
+</main>
+<!--<div [innerHtml]="innerHTMLFromJSON"></div>-->
+<footer></footer>
